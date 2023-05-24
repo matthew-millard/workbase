@@ -1,0 +1,21 @@
+{
+  "name": "workbase",
+  "version": "1.0.0",
+  "description": "WorkBase is an intuitive command-line application powered by MySQL, specifically tailored for business owners. Streamlining the management of employee records, WorkBase ensures efficient organization and effortless retrieval within your database.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "Matthew Millard",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
