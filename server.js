@@ -11,6 +11,13 @@ const db = mysql.createConnection({
 	database: 'workbase',
 })
 
+// Queries
+const queries = {
+	'View All Departments': 'SELECT * FROM ??',
+	'View All Roles': "SELECT r.title AS 'job_title', r.id AS 'role_id', d.name AS 'department_name',r.salary AS 'role_salary' FROM ?? r JOIN department d ON r.department_id = d.id",
+	'View All Employees': 'SELECT * FROM ??',
+}   
+
 // Main Menu
 function mainMenu() {
 	inquirer
@@ -23,19 +30,16 @@ function mainMenu() {
 			},
 		])
 		.then(answers => {
-			let query
 			switch (answers.mainMenu) {
 				case 'View All Departments':
-					query = 'SELECT * FROM ??'
-					viewTable('department', query)
+					viewTable('department', queries['View All Departments'])
 					break
 				case 'View All Roles':
-					query = 'SELECT * FROM ??'
-					viewTable('role', query)
+					viewTable('role', queries['View All Roles'])
 					break
 				case 'View All Employees':
 					query = 'SELECT * FROM ??'
-					viewTable('employee', query)
+					viewTable('employee', queries['View All Employees'])
 					break
 				case 'Add A Department':
 					addDepartment()
