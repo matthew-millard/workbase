@@ -1,21 +1,17 @@
--- View All Departments
-SELECT
-    *
-FROM
-    department;
+// I stored queries in a seperate module to keep code organized
 
--- View All Roles
-SELECT
+const queries = {
+	'View All Departments': `SELECT * 
+FROM department`,
+	'View All Roles': `SELECT
     r.title AS 'job_title',
     r.id AS 'role_id',
     d.name AS 'department_name',
     r.salary AS 'role_salary'
 FROM
     role r
-    JOIN department d ON r.department_id = d.id;
-
--- View All Employees
-SELECT
+    JOIN department d ON r.department_id = d.id;`,
+	'View All Employees': `SELECT
     e.id AS 'employee_id',
     e.first_name,
     e.last_name,
@@ -29,4 +25,8 @@ FROM
     JOIN department d ON r.department_id = d.id
     LEFT JOIN employee m ON e.manager_id = m.id
 ORDER BY
-    e.id;
+    e.id;`,
+}
+
+// Exports
+module.exports = queries
