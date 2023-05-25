@@ -30,3 +30,9 @@ FROM
     LEFT JOIN employee m ON e.manager_id = m.id
 ORDER BY
     e.id;
+
+-- Add Department
+INSERT INTO
+    department (name)
+VALUES
+    (?)

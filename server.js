@@ -60,5 +60,34 @@ function viewTable(query) {
 	})
 }
 
+// Adds a department to the database and then returns to the main menu
+function addDepartment() {
+	inquirer
+		.prompt([
+			{
+				type: 'input',
+				name: 'departmentName',
+				message: 'What is the department name you would like to add?',
+			},
+		])
+		.then(answers => {
+			const depName = answers.departmentName.trim()
+			if (depName.length < 2) {
+				console.error('🚫 Error: Department name must be at least 2 characters.')
+				return mainMenu()
+			}
+			db.query(queries['Add Department'], depName, (err, result) => {
+				if (err) {
+					throw err
+				}
+				console.log(`✅ The ${depName} department was successfully added.`)
+				mainMenu()
+			})
+		})
+		.catch(error => {
+			console.error(error)
+		})
+}
+
 // Initiate Program
 mainMenu()
