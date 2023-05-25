@@ -1,3 +1,5 @@
+DROP DATABASE workbase IF EXISTS;
+
 CREATE DATABASE workbase;
 
 USE workbase;

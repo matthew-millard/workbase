@@ -1,6 +1,7 @@
 // Imports
 const mysql = require('mysql2')
 const inquirer = require('inquirer')
+const queries = require('./db/queries')
 require('dotenv').config()
 
 // MySQL Connection
@@ -10,13 +11,6 @@ const db = mysql.createConnection({
 	password: process.env.DB_PASSWORD,
 	database: 'workbase',
 })
-
-// Queries
-const queries = {
-	'View All Departments': 'SELECT * FROM ??',
-	'View All Roles': "SELECT r.title AS 'job_title', r.id AS 'role_id', d.name AS 'department_name',r.salary AS 'role_salary' FROM ?? r JOIN department d ON r.department_id = d.id",
-	'View All Employees': 'SELECT * FROM ??',
-}   
 
 // Main Menu
 function mainMenu() {
@@ -32,14 +26,14 @@ function mainMenu() {
 		.then(answers => {
 			switch (answers.mainMenu) {
 				case 'View All Departments':
-					viewTable('department', queries['View All Departments'])
+					viewTable(queries['View All Departments'])
 					break
 				case 'View All Roles':
-					viewTable('role', queries['View All Roles'])
+					viewTable(queries['View All Roles'])
 					break
 				case 'View All Employees':
 					query = 'SELECT * FROM ??'
-					viewTable('employee', queries['View All Employees'])
+					viewTable(queries['View All Employees'])
 					break
 				case 'Add A Department':
 					addDepartment()
@@ -58,8 +52,8 @@ function mainMenu() {
 }
 
 // Executes a database query on a specified table and outputs the results in a table format in the console
-function viewTable(tableName, query) {
-	db.query(query, [tableName], (err, results) => {
+function viewTable(query) {
+	db.query(query, (err, results) => {
 		if (err) throw err
 		console.table(results)
 		mainMenu()
