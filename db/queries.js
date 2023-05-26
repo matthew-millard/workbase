@@ -26,7 +26,8 @@ FROM
     LEFT JOIN employee m ON e.manager_id = m.id
 ORDER BY
     e.id;`,
-    'Add Department': `INSERT INTO department (name) VALUES (?)`,
+	'Add Department': `INSERT INTO department (name) VALUES (?)`,
+	'Add Role': `INSERT INTO role (title, salary, department_id)VALUES (?, ?, ?);`,
 }
 
 // Exports
