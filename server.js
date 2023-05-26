@@ -60,7 +60,7 @@ function viewTable(query) {
 	})
 }
 
-// Adds a department to the database and then returns to the main menu
+// Prompts user for a new department name, validates input length, and executes a database query to insert the department, handling and logging errors as needed.
 function addDepartment() {
 	inquirer
 		.prompt([
@@ -89,6 +89,7 @@ function addDepartment() {
 		})
 }
 
+// Prompts user for new role details, then executes a database query to insert the role, handling and logging errors as needed.
 function addRole() {
 	inquirer
 		.prompt([
@@ -167,6 +168,8 @@ function addEmployee() {
 			.catch(error => console.error(error))
 	})
 }
+
+
 
 // Initiate Program
 mainMenu()
