@@ -124,6 +124,50 @@ function addRole() {
 		})
 }
 
+function addEmployee() {
+	db.query('SELECT title FROM role', (err, roles) => {
+		const allRoles = roles.map(role => role.title)
+		inquirer
+			.prompt([
+				{
+					type: 'input',
+					name: 'firstName',
+					message: 'What is the first name of the employee you would like to add?',
+				},
+				{
+					type: 'input',
+					name: 'lastName',
+					message: 'What is the last name of the employee you would like to add?',
+				},
+				{
+					type: 'list',
+					name: 'role',
+					message: 'What is the role of the employee you would like to add?',
+					choices: allRoles,
+				},
+			])
+			.then(answers => {
+				console.log(answers)
+				const { firstName, lastName, role } = answers
+				db.query('SELECT id FROM role WHERE title = ?', [role], (err, result) => {
+					if (err) {
+						throw err
+					}
+					const role_Id = result[0].id
+
+					// Query to add employee
+					db.query('INSERT INTO employee (first_name, last_name, role_Id) VALUES (?, ?, ?)', [firstName, lastName, role_Id], (err, result) => {
+						if (err) {
+							throw err
+						}
+						console.log(`✅ ${firstName} ${lastName} was successfully added as a new employee.`)
+						mainMenu()
+					})
+				})
+			})
+			.catch(error => console.error(error))
+	})
+}
 
 
 

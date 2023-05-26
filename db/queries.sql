@@ -42,3 +42,9 @@ INSERT INTO
     role (title, salary, department_id)
 VALUES
     (?, ?, ?);
+
+-- Add Employee
+INSERT INTO
+    employee (first_name, last_name, role_id)
+VALUES
+    (?, ?, ?)
