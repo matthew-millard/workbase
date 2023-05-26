@@ -89,5 +89,39 @@ function addDepartment() {
 		})
 }
 
+function addRole() {
+	inquirer
+		.prompt([
+			{
+				type: 'input',
+				name: 'roleName',
+				message: 'What is the name of the role you would like to add?',
+			},
+			{
+				type: 'number',
+				name: 'salary',
+				message: 'What is the salary associated with the role?',
+			},
+			{
+				type: 'number',
+				name: 'departmentId',
+				message: 'What is the department id associated with this role?',
+			},
+		])
+		.then(answers => {
+			const { roleName, salary, departmentId } = answers
+			db.query(queries['Add Role'], [roleName, salary, departmentId], (err, result) => {
+				if (err) {
+					throw err
+				}
+				console.log(`✅ The ${roleName} role was successfully added.`)
+				mainMenu()
+			})
+		})
+		.catch(error => {
+			console.error(error)
+		})
+}
+
 // Initiate Program
 mainMenu()

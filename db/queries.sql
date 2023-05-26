@@ -35,4 +35,10 @@ ORDER BY
 INSERT INTO
     department (name)
 VALUES
-    (?)
+    (?);
+
+-- Add Role
+INSERT INTO
+    role (title, salary, department_id)
+VALUES
+    (?, ?, ?);
