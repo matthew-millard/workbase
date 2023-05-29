@@ -24,7 +24,7 @@ async function mainMenu() {
 				type: 'list',
 				name: 'mainMenu',
 				message: 'What would you like to do?',
-				choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role'],
+				choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role', 'Exit'],
 			},
 		])
 		switch (answers.mainMenu) {
@@ -48,6 +48,10 @@ async function mainMenu() {
 				break
 			case 'Update An Employee Role':
 				updateEmployee()
+				break
+			case 'Exit':
+				console.log('You have exited the application.')
+				process.exit()
 				break
 		}
 	} catch (error) {
