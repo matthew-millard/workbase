@@ -125,7 +125,11 @@ function addRole() {
 }
 
 function addEmployee() {
+	// Query to get all roles
 	db.query('SELECT title FROM role', (err, roles) => {
+		if (err) {
+			throw err
+		}
 		const allRoles = roles.map(role => role.title)
 		inquirer
 			.prompt([
@@ -147,7 +151,6 @@ function addEmployee() {
 				},
 			])
 			.then(answers => {
-				console.log(answers)
 				const { firstName, lastName, role } = answers
 				db.query('SELECT id FROM role WHERE title = ?', [role], (err, result) => {
 					if (err) {
@@ -168,8 +171,6 @@ function addEmployee() {
 			.catch(error => console.error(error))
 	})
 }
-
-
 
 // Initiate Program
 mainMenu()
