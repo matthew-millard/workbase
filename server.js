@@ -6,6 +6,9 @@ require('dotenv').config()
 // Import queries
 const queries = require('./db/queries')
 
+// Import Prompts
+const { mainMenuPrompts, addDepartmentPrompt } = require('./utils/prompts')
+
 // MySQL Connection - Promisified
 const db = mysql
 	.createConnection({
@@ -19,14 +22,7 @@ const db = mysql
 // Main Menu
 async function mainMenu() {
 	try {
-		const answers = await inquirer.prompt([
-			{
-				type: 'list',
-				name: 'mainMenu',
-				message: 'What would you like to do?',
-				choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role', 'Exit'],
-			},
-		])
+		const answers = await inquirer.prompt(mainMenuPrompts)
 		switch (answers.mainMenu) {
 			case 'View All Departments':
 				await viewTable(queries['View All Departments'])
@@ -72,13 +68,7 @@ async function viewTable(query) {
 // Prompts user for a new department name, validates input length, and executes a database query to insert the department, handling and logging errors as needed.
 async function addDepartment() {
 	try {
-		const answers = await inquirer.prompt([
-			{
-				type: 'input',
-				name: 'departmentName',
-				message: 'What is the department name you would like to add?',
-			},
-		])
+		const answers = await inquirer.prompt(addDepartmentPrompt)
 
 		const depName = answers.departmentName.trim()
 		if (depName.length < 2) {
