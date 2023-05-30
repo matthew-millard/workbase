@@ -11,6 +11,7 @@
   "author": "Matthew Millard",
   "license": "MIT",
   "dependencies": {
+    "cfonts": "^3.2.0",
     "dotenv": "^16.0.3",
     "inquirer": "^8.2.4",
     "mysql2": "^3.3.2"
