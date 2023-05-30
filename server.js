@@ -54,6 +54,9 @@ async function mainMenu() {
 			case 'View Employees By Department':
 				viewEmployeesByDepartment()
 				break
+			case 'Delete Employee, Role, or Department':
+				deleteItem()
+				break
 			case 'Exit':
 				console.log('You have exited the application.')
 				process.exit()
@@ -305,6 +308,99 @@ async function viewEmployeesByDepartment() {
 		const [employees] = await db.query('SELECT first_name, last_name FROM employee WHERE role_id IN (SELECT id FROM role WHERE department_id = ?)', [department_id])
 		console.table(employees)
 		mainMenu()
+	} catch (error) {
+		console.error(`Error: ${error}`)
+	}
+}
+
+// Delete employee, department, or role
+async function deleteItem() {
+	try {
+		// Prompt user to select item to delete
+		const answers = await inquirer.prompt([
+			{
+				type: 'list',
+				name: 'item',
+				message: 'Which item would you like to delete?',
+				choices: ['Employee', 'Department', 'Role'],
+			},
+		])
+		// Destructure answers
+		const { item } = answers
+		// Delete employee
+		if (item === 'Employee') {
+			// Query to get all employees
+			const [employees] = await db.query('SELECT first_name, last_name FROM employee')
+			const allEmployees = employees.map(employee => `${employee.first_name} ${employee.last_name}`)
+			// Prompt user to select employee
+			const answers = await inquirer.prompt([
+				{
+					type: 'list',
+					name: 'employee',
+					message: 'Which employee would you like to delete?',
+					choices: allEmployees,
+				},
+			])
+			// Destructure answers
+			const { employee } = answers
+			// Query to get employee id
+			const employee_firstName = employee.split(' ')[0]
+			const employee_lastName = employee.split(' ')[1]
+			const [employeeResult] = await db.query('SELECT id FROM employee WHERE first_name = ? AND last_name = ?', [employee_firstName, employee_lastName])
+			const employee_id = employeeResult[0].id
+			// Query to delete employee
+			await db.query('DELETE FROM employee WHERE id = ?', [employee_id])
+			console.log(`✅ ${employee} has been deleted.`)
+			mainMenu()
+		}
+		// Delete department
+		if (item === 'Department') {
+			// Query to get all departments
+			const [departments] = await db.query('SELECT name FROM department')
+			const allDepartments = departments.map(department => department.name)
+			// Prompt user to select department
+			const answers = await inquirer.prompt([
+				{
+					type: 'list',
+					name: 'department',
+					message: 'Which department would you like to delete?',
+					choices: allDepartments,
+				},
+			])
+			// Destructure answers
+			const { department } = answers
+			// Query to get department id
+			const [departmentResult] = await db.query('SELECT id FROM department WHERE name = ?', [department])
+			const department_id = departmentResult[0].id
+			// Query to delete department
+			await db.query('DELETE FROM department WHERE id = ?', [department_id])
+			console.log(`✅ ${department} has been deleted.`)
+			mainMenu()
+		}
+		// Delete role
+		if (item === 'Role') {
+			// Query to get all roles
+			const [roles] = await db.query('SELECT title FROM role')
+			const allRoles = roles.map(role => role.title)
+			// Prompt user to select role
+			const answers = await inquirer.prompt([
+				{
+					type: 'list',
+					name: 'role',
+					message: 'Which role would you like to delete?',
+					choices: allRoles,
+				},
+			])
+			// Destructure answers
+			const { role } = answers
+			// Query to get role id
+			const [roleResult] = await db.query('SELECT id FROM role WHERE title = ?', [role])
+			const role_id = roleResult[0].id
+			// Query to delete role
+			await db.query('DELETE FROM role WHERE id = ?', [role_id])
+			console.log(`✅ ${role} has been deleted.`)
+			mainMenu()
+		}
 	} catch (error) {
 		console.error(`Error: ${error}`)
 	}

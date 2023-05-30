@@ -15,6 +15,7 @@ const prompts = {
 				'Update Manager',
 				'View Employees By Manager',
 				'View Employees By Department',
+				'Delete Employee, Role, or Department',
 				'Exit',
 			],
 		},
