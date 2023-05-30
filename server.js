@@ -51,6 +51,9 @@ async function mainMenu() {
 			case 'View Employees By Manager':
 				viewEmployeesByManager()
 				break
+			case 'View Employees By Department':
+				viewEmployeesByDepartment()
+				break
 			case 'Exit':
 				console.log('You have exited the application.')
 				process.exit()
@@ -277,6 +280,36 @@ async function viewEmployeesByManager() {
 		console.error(`Error: ${error}`)
 	}
 }
+
+// View employees by department
+async function viewEmployeesByDepartment() {
+	try {
+		// Query to get all departments
+		const [departments] = await db.query('SELECT name FROM department')
+		const allDepartments = departments.map(department => department.name)	
+		// Prompt user to select department
+		const answers = await inquirer.prompt([
+			{
+				type: 'list',
+				name: 'department',
+				message: 'Which department would you like to view employees for?',
+				choices: allDepartments,
+			},
+		])
+		// Destructure answers
+		const { department } = answers
+		// Query to get department id
+		const [departmentResult] = await db.query('SELECT id FROM department WHERE name = ?', [department])
+		const department_id = departmentResult[0].id
+		// Query to get employees by department
+		const [employees] = await db.query('SELECT first_name, last_name FROM employee WHERE role_id IN (SELECT id FROM role WHERE department_id = ?)', [department_id])
+		console.table(employees)
+		mainMenu()
+	} catch (error) {
+		console.error(`Error: ${error}`)
+	}
+}
+
 
 // Initializes the application
 mainMenu()

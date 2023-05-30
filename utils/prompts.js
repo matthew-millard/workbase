@@ -4,7 +4,19 @@ const prompts = {
 			type: 'list',
 			name: 'mainMenu',
 			message: 'What would you like to do?',
-			choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role', 'Update Manager', 'View Employees By Manager', 'Exit'],
+			choices: [
+				'View All Departments',
+				'View All Roles',
+				'View All Employees',
+				'Add A Department',
+				'Add A Role',
+				'Add An Employee',
+				'Update An Employee Role',
+				'Update Manager',
+				'View Employees By Manager',
+				'View Employees By Department',
+				'Exit',
+			],
 		},
 	],
 	addDepartmentPrompts: [
@@ -15,7 +27,7 @@ const prompts = {
 			validate: function (input) {
 				const trimmedInput = input.trim()
 				if (trimmedInput.length < 2) {
-					throw new Error( '🚫 Department name must be at least 2 characters. Please try again.')
+					throw new Error('🚫 Department name must be at least 2 characters. Please try again.')
 				} else {
 					return true
 				}
