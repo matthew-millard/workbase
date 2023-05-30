@@ -48,6 +48,9 @@ async function mainMenu() {
 			case 'Update Manager':
 				updateManager()
 				break
+			case 'View Employees By Manager':
+				viewEmployeesByManager()
+				break
 			case 'Exit':
 				console.log('You have exited the application.')
 				process.exit()
@@ -225,6 +228,50 @@ async function updateManager() {
 		// Query to update employee manager
 		await db.query('UPDATE employee SET manager_id = ? WHERE id = ?', [manager_id, employee_id])
 		console.log(`✅ ${manager} has been updated as manager of ${employee}.`)
+		mainMenu()
+	} catch (error) {
+		console.error(`Error: ${error}`)
+	}
+}
+
+// View employees by manager
+async function viewEmployeesByManager() {
+	try {
+		// Query to get all managers
+		const [managers] = await db.query('SELECT DISTINCT manager_id FROM employee')
+		// Remove null values
+		managers.forEach((manager, index) => {
+			if (manager.manager_id === null) {
+				managers.splice(index, 1)
+			}
+		})
+
+		// Get manager names from manager ids
+		const managerNames = []
+		for (const manager of managers) {
+			const [managerResult] = await db.query('SELECT first_name, last_name FROM employee WHERE id = ?', [manager.manager_id])
+			const manager_name = `${managerResult[0].first_name} ${managerResult[0].last_name}`
+			managerNames.push(manager_name)
+		}
+		//  Prompt user to select manager
+		const answers = await inquirer.prompt([
+			{
+				type: 'list',
+				name: 'manager',
+				message: 'Which manager would you like to view employees for?',
+				choices: managerNames,
+			},
+		])
+		// Destructure answers
+		const { manager } = answers
+		// Query to get manager id
+		const manager_firstName = manager.split(' ')[0]
+		const manager_lastName = manager.split(' ')[1]
+		const [managerResult] = await db.query('SELECT id FROM employee WHERE first_name = ? AND last_name = ?', [manager_firstName, manager_lastName])
+		const manager_id = managerResult[0].id
+		// Query to get employees by manager
+		const [employees] = await db.query('SELECT first_name, last_name FROM employee WHERE manager_id = ?', [manager_id])
+		console.table(employees)
 		mainMenu()
 	} catch (error) {
 		console.error(`Error: ${error}`)
