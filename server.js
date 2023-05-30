@@ -45,6 +45,9 @@ async function mainMenu() {
 			case 'Update An Employee Role':
 				updateEmployee()
 				break
+			case 'Update Manager':
+				updateManager()
+				break
 			case 'Exit':
 				console.log('You have exited the application.')
 				process.exit()
@@ -181,6 +184,47 @@ async function updateEmployee() {
 		// Query to update employee role
 		await db.query('UPDATE employee SET role_id = ? WHERE id = ?', [role_id, employee_id])
 		console.log(`✅ ${employee} was successfully updated to ${role}.`)
+		mainMenu()
+	} catch (error) {
+		console.error(`Error: ${error}`)
+	}
+}
+
+// Update employee manager
+async function updateManager() {
+	try {
+		// Query to get all employees
+		const [employees] = await db.query('SELECT first_name, last_name FROM employee')
+		const allEmployees = employees.map(employee => `${employee.first_name} ${employee.last_name}`)
+		const answers = await inquirer.prompt([
+			{
+				type: 'list',
+				name: 'employee',
+				message: 'Which employee would you like to update?',
+				choices: allEmployees,
+			},
+			{
+				type: 'list',
+				name: 'manager',
+				message: "Who is the employee's new manager?",
+				choices: allEmployees,
+			},
+		])
+		// Destructure answers
+		const { employee, manager } = answers
+		// Query to get employee id
+		const employee_firstName = employee.split(' ')[0]
+		const employee_lastName = employee.split(' ')[1]
+		const [employeeResult] = await db.query('SELECT id FROM employee WHERE first_name = ? AND last_name = ?', [employee_firstName, employee_lastName])
+		const employee_id = employeeResult[0].id
+		// Query to get manager id
+		const manager_firstName = manager.split(' ')[0]
+		const manager_lastName = manager.split(' ')[1]
+		const [managerResult] = await db.query('SELECT id FROM employee WHERE first_name = ? AND last_name = ?', [manager_firstName, manager_lastName])
+		const manager_id = managerResult[0].id
+		// Query to update employee manager
+		await db.query('UPDATE employee SET manager_id = ? WHERE id = ?', [manager_id, employee_id])
+		console.log(`✅ ${manager} has been updated as manager of ${employee}.`)
 		mainMenu()
 	} catch (error) {
 		console.error(`Error: ${error}`)

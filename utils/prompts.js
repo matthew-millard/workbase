@@ -4,7 +4,7 @@ const prompts = {
 			type: 'list',
 			name: 'mainMenu',
 			message: 'What would you like to do?',
-			choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role', 'Exit'],
+			choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add A Department', 'Add A Role', 'Add An Employee', 'Update An Employee Role', 'Update Manager', 'Exit'],
 		},
 	],
 	addDepartmentPrompts: [
