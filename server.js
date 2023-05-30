@@ -7,7 +7,7 @@ require('dotenv').config()
 const queries = require('./db/queries')
 
 // Import Prompts
-const { mainMenuPrompts, addDepartmentPrompt } = require('./utils/prompts')
+const { mainMenuPrompts, addDepartmentPrompts, addRolePrompts } = require('./utils/prompts')
 
 // MySQL Connection - Promisified
 const db = mysql
@@ -51,7 +51,7 @@ async function mainMenu() {
 				break
 		}
 	} catch (error) {
-		console.error(error)
+		console.error(`Error: ${error}`)
 	}
 }
 
@@ -62,55 +62,35 @@ async function viewTable(query) {
 		console.table(results)
 		mainMenu()
 	} catch (error) {
-		console.error(error)
+		console.error(`Error: ${error}`)
 	}
 }
 // Prompts user for a new department name, validates input length, and executes a database query to insert the department, handling and logging errors as needed.
 async function addDepartment() {
 	try {
-		const answers = await inquirer.prompt(addDepartmentPrompt)
-
+		const answers = await inquirer.prompt(addDepartmentPrompts)
 		const depName = answers.departmentName.trim()
-		if (depName.length < 2) {
-			console.error('🚫 Error: Department name must be at least 2 characters.')
-			return mainMenu()
-		}
 		await db.query(queries['Add Department'], depName)
 		console.log(`✅ The ${depName} department was successfully added.`)
-		mainMenu()
 	} catch (error) {
-		console.error(error)
+		console.error(`Error: ${error.message}`)
+	} finally {
+		mainMenu()
 	}
 }
 
 // Prompts user for new role details, then executes a database query to insert the role, handling and logging errors as needed.
 async function addRole() {
 	try {
-		const answers = await inquirer.prompt([
-			{
-				type: 'input',
-				name: 'roleName',
-				message: 'What is the name of the role you would like to add?',
-			},
-			{
-				type: 'number',
-				name: 'salary',
-				message: 'What is the salary associated with the role?',
-			},
-			{
-				type: 'number',
-				name: 'departmentId',
-				message: 'What is the department id associated with this role?',
-			},
-		])
-		// Destructure answers object
+		const answers = await inquirer.prompt(addRolePrompts)
 		const { roleName, salary, departmentId } = answers
 
 		await db.query(queries['Add Role'], [roleName, salary, departmentId])
 		console.log(`✅ The ${roleName} role was successfully added.`)
-		mainMenu()
 	} catch (error) {
-		console.error(error)
+		console.error(`Error: ${error}`)
+	} finally {
+		mainMenu()
 	}
 }
 
@@ -146,7 +126,6 @@ async function addEmployee() {
 				choices: allEmployees,
 			},
 		])
-		// Destructure answers
 		const { firstName, lastName, role, manager } = answers
 		// Query to get role id
 		const [result] = await db.query('SELECT id FROM role WHERE title = ?', [role])
@@ -162,7 +141,7 @@ async function addEmployee() {
 		console.log(`✅ ${firstName} ${lastName} was successfully added as a new employee.`)
 		mainMenu()
 	} catch (error) {
-		console.error(error)
+		console.error(`Error: ${error}`)
 	}
 }
 
@@ -204,7 +183,7 @@ async function updateEmployee() {
 		console.log(`✅ ${employee} was successfully updated to ${role}.`)
 		mainMenu()
 	} catch (error) {
-		console.error(error)
+		console.error(`Error: ${error}`)
 	}
 }
 
