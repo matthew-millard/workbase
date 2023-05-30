@@ -289,6 +289,30 @@ async function viewEmployeesByManager() {
 	}
 }
 
+// View employees by department
+async function viewEmployeesByDepartment() {
+	try {
+		const [departments] = await db.query('SELECT name FROM department')
+		const departmentNames = departments.map(department => department.name)
+		const answers = await inquirer.prompt([
+			{
+				type: 'list',
+				name: 'department',
+				message: 'Which department would you like to view employees for?',
+				choices: departmentNames,
+			},
+		])
+		const { department } = answers
+		const [departmentResult] = await db.query('SELECT id FROM department WHERE name = ?', [department])
+		const department_id = departmentResult[0].id
+		const [employees] = await db.query('SELECT first_name, last_name FROM employee WHERE role_id IN (SELECT id FROM role WHERE department_id = ?)', [department_id])
+		console.table(employees)
+		mainMenu()
+	} catch (error) {
+		console.error(`Error: ${error}`)
+	}
+}
+
 // Delete employee, department, or role
 async function deleteItem() {
 	try {
