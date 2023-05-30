@@ -1,7 +1,7 @@
 // Import dependencies
 const mysql = require('mysql2')
 const inquirer = require('inquirer')
-const CFonts = require('cfonts')
+const cFonts = require('cfonts')
 require('dotenv').config()
 
 // Import queries
@@ -21,7 +21,7 @@ const db = mysql
 	.promise()
 
 // CFonts ANSI WorkBase Logo
-CFonts.say('WorkBase', {
+cFonts.say('WorkBase', {
 	colors: ['cyanBright'],
 })
 
@@ -252,23 +252,20 @@ async function updateManager() {
 // View employees by manager
 async function viewEmployeesByManager() {
 	try {
-		// Query to get all managers
 		const [managers] = await db.query('SELECT DISTINCT manager_id FROM employee')
-		// Remove null values
 		managers.forEach((manager, index) => {
 			if (manager.manager_id === null) {
 				managers.splice(index, 1)
 			}
 		})
 
-		// Get manager names from manager ids
 		const managerNames = []
 		for (const manager of managers) {
-			const [managerResult] = await db.query('SELECT first_name, last_name FROM employee WHERE id = ?', [manager.manager_id])
+			const [managerResult] = await db.query('SELECT first_name, last_name FROM employee WHERE manager_id = ?', [manager.manager_id])
 			const manager_name = `${managerResult[0].first_name} ${managerResult[0].last_name}`
 			managerNames.push(manager_name)
 		}
-		//  Prompt user to select manager
+
 		const answers = await inquirer.prompt([
 			{
 				type: 'list',
@@ -277,44 +274,14 @@ async function viewEmployeesByManager() {
 				choices: managerNames,
 			},
 		])
-		// Destructure answers
+
 		const { manager } = answers
-		// Query to get manager id
 		const manager_firstName = manager.split(' ')[0]
 		const manager_lastName = manager.split(' ')[1]
 		const [managerResult] = await db.query('SELECT id FROM employee WHERE first_name = ? AND last_name = ?', [manager_firstName, manager_lastName])
 		const manager_id = managerResult[0].id
-		// Query to get employees by manager
-		const [employees] = await db.query('SELECT first_name, last_name FROM employee WHERE manager_id = ?', [manager_id])
-		console.table(employees)
-		mainMenu()
-	} catch (error) {
-		console.error(`Error: ${error}`)
-	}
-}
 
-// View employees by department
-async function viewEmployeesByDepartment() {
-	try {
-		// Query to get all departments
-		const [departments] = await db.query('SELECT name FROM department')
-		const allDepartments = departments.map(department => department.name)
-		// Prompt user to select department
-		const answers = await inquirer.prompt([
-			{
-				type: 'list',
-				name: 'department',
-				message: 'Which department would you like to view employees for?',
-				choices: allDepartments,
-			},
-		])
-		// Destructure answers
-		const { department } = answers
-		// Query to get department id
-		const [departmentResult] = await db.query('SELECT id FROM department WHERE name = ?', [department])
-		const department_id = departmentResult[0].id
-		// Query to get employees by department
-		const [employees] = await db.query('SELECT first_name, last_name FROM employee WHERE role_id IN (SELECT id FROM role WHERE department_id = ?)', [department_id])
+		const [employees] = await db.query('SELECT first_name, last_name FROM employee WHERE manager_id = ?', [manager_id])
 		console.table(employees)
 		mainMenu()
 	} catch (error) {
