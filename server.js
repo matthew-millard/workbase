@@ -1,6 +1,7 @@
 // Import dependencies
 const mysql = require('mysql2')
 const inquirer = require('inquirer')
+const CFonts = require('cfonts')
 require('dotenv').config()
 
 // Import queries
@@ -18,6 +19,11 @@ const db = mysql
 		database: 'workbase',
 	})
 	.promise()
+
+// CFonts ANSI WorkBase Logo
+CFonts.say('WorkBase', {
+	colors: ['cyanBright'],
+})
 
 // Main Menu
 async function mainMenu() {
@@ -292,7 +298,7 @@ async function viewEmployeesByDepartment() {
 	try {
 		// Query to get all departments
 		const [departments] = await db.query('SELECT name FROM department')
-		const allDepartments = departments.map(department => department.name)	
+		const allDepartments = departments.map(department => department.name)
 		// Prompt user to select department
 		const answers = await inquirer.prompt([
 			{
@@ -437,8 +443,6 @@ async function viewDepartmentBudget() {
 		console.error(`Error: ${error}`)
 	}
 }
-
-
 
 // Initializes the application
 mainMenu()
