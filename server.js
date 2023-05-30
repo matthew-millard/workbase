@@ -57,6 +57,9 @@ async function mainMenu() {
 			case 'Delete Employee, Role, or Department':
 				deleteItem()
 				break
+			case 'View Department Salary Budget':
+				viewDepartmentBudget()
+				break
 			case 'Exit':
 				console.log('You have exited the application.')
 				process.exit()
@@ -405,6 +408,36 @@ async function deleteItem() {
 		console.error(`Error: ${error}`)
 	}
 }
+
+// View the total salary budget of a department
+async function viewDepartmentBudget() {
+	try {
+		// Query to get all departments
+		const [departments] = await db.query('SELECT name FROM department')
+		const allDepartments = departments.map(department => department.name)
+		// Prompt user to select department
+		const answers = await inquirer.prompt([
+			{
+				type: 'list',
+				name: 'department',
+				message: 'Which department would you like to view the total salary budget for?',
+				choices: allDepartments,
+			},
+		])
+		// Destructure answers
+		const { department } = answers
+		// Query to get department id
+		const [departmentResult] = await db.query('SELECT id FROM department WHERE name = ?', [department])
+		const department_id = departmentResult[0].id
+		// Query to get total salary budget
+		const [budget] = await db.query('SELECT SUM(salary) AS budget FROM role WHERE department_id = ?', [department_id])
+		console.table(budget)
+		mainMenu()
+	} catch (error) {
+		console.error(`Error: ${error}`)
+	}
+}
+
 
 
 // Initializes the application

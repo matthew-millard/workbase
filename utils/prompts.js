@@ -16,6 +16,7 @@ const prompts = {
 				'View Employees By Manager',
 				'View Employees By Department',
 				'Delete Employee, Role, or Department',
+				'View Department Salary Budget',
 				'Exit',
 			],
 		},
