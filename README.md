@@ -17,6 +17,7 @@ WorkBase is an intuitive command-line application powered by MySQL, specifically
 - [Node Packages Used](#node-packages-used)
 - [Contribution](#contribution)
 - [License](#license)
+- [Questions](#questions)
 
 ## Project Setup Guide
 
